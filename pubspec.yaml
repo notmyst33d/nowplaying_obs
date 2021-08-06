@@ -1,0 +1,26 @@
+name: nowplaying_obs
+description: Application for embedding currently playing song in OBS (or any other streaming software that supports window capture and chroma key)
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.12.0 <3.0.0"
+
+dependencies:
+  shelf: ^1.2.0
+  shelf_router: ^1.1.1
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/Inter-Regular.ttf
