@@ -1,7 +1,7 @@
 # Now Playing OBS
 Application for embedding currently playing song in OBS (or any other streaming software that supports window capture and chroma key)
 
-This app is still WIP and has no customization whatsoever
+This app is still WIP and has no customization whatsoever, also it cant run in background, so the window should always be in foreground, if you minimize the window Flutter will stop rendering it
 
 ## How to use
 1. Download latest Release.7z from Releases section
