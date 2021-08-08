@@ -1,14 +1,21 @@
-import 'package:flutter/material.dart';
-
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
+import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
-void main() {
-  runApp(NowPlayingApp());
+import 'server.dart';
+
+void main(List<String> args) {
+  if (args.contains('server')) {
+    runApp(NowPlayingServerApp());
+  } else {
+    runApp(NowPlayingApp());
+  }
 }
 
 class NowPlayingApp extends StatelessWidget {
@@ -41,7 +48,6 @@ class NowPlayingState extends State<NowPlaying>
   late final router = shelf_router.Router()..post('/', onUpdate);
   late final cascade = Cascade().add(router);
   late final server;
-
   var timer;
 
   String currentSong = 'None';
@@ -65,15 +71,42 @@ class NowPlayingState extends State<NowPlaying>
   void dispose() {
     super.dispose();
     controller.dispose();
-    server.close();
   }
 
   Future setupServer() async {
-    server = await shelf_io.serve(
-      logRequests().addHandler(cascade.handler),
-      InternetAddress.anyIPv4,
-      50142,
-    );
+    if (kIsWeb) {
+      print('Running on web, going to poll external server');
+
+      bool lock = false;
+      final client = http.Client();
+
+      Timer.periodic(Duration(milliseconds: 500), (timer) {
+        if (!lock) {
+          lock = true;
+
+          client
+              .get(Uri.parse('http://127.0.0.1:50142/update'))
+              .then((response) {
+            if (response.body != currentSong) {
+              setState(() {
+                currentSong = response.body;
+              });
+              playAnimation();
+            }
+
+            lock = false;
+          }).onError((error, stackTrace) {
+            lock = false;
+          });
+        }
+      });
+    } else {
+      server = await shelf_io.serve(
+        logRequests().addHandler(cascade.handler),
+        InternetAddress.anyIPv4,
+        50142,
+      );
+    }
   }
 
   Response onUpdate(Request request) {

@@ -3,7 +3,7 @@ description: Application for embedding currently playing song in OBS (or any oth
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 1.0.1
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -11,6 +11,7 @@ environment:
 dependencies:
   shelf: ^1.2.0
   shelf_router: ^1.1.1
+  http: ^0.13.3
   flutter:
     sdk: flutter
 
