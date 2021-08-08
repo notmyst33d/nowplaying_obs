@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'server.dart';
 
-void main(List<String> args) {
+void main([List<String> args = const []]) {
   if (args.contains('server')) {
     runApp(NowPlayingServerApp());
   } else {
