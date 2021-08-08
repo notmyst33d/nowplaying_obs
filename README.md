@@ -3,14 +3,22 @@ Application for embedding currently playing song in OBS (or any other streaming 
 
 This app is still WIP and has no customization whatsoever, also it cant run in background, so the window should always be in foreground, if you minimize the window Flutter will stop rendering it
 
-## How to use
+## Installing
 1. Download latest Release.7z from Releases section
 2. Unpack it
-3. Launch nowplaying_obs.exe
-4. Maximize the window
-5. Setup window capture and chroma key (i recommend you to use Similarity: 325 for best results)
-6. Align the window capture to the bottom
-7. Install a plugin for your browser
+3. Install a plugin for your browser
+
+## Use cases
+### OBS Browser element (recommended)
+1. Launch start_as_server.bat
+2. Go to https://notmyst33d.github.io/nowplaying_obs
+3. Add Browser element and apply chroma key filter (i recommend you to use Similarity: 325 for best results)
+4. Align the Browser element to the bottom
+
+### Standalone
+1. Launch nowplaying_obs.exe
+2. Setup window capture and apply chroma key filter (i recommend you to use Similarity: 325 for best results)
+3. Align the window capture to the bottom
 
 ## How to make your own plugins
 All you need to do is send POST request to `http://127.0.0.1:50142` with JSON data
