@@ -8,11 +8,12 @@ const RESOURCES = {
 "assets/FontManifest.json": "dd61cbed3570fd7ea7f4fc9f2365ec2b",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
 "assets/NOTICES": "28aed769419ea471d462fb4988bbdb65",
+"favicon.ico": "b55ee4a72587c7c2f9db1d657ecbd83c",
 "favicon.png": "b55ee4a72587c7c2f9db1d657ecbd83c",
-"index.html": "23920fff0062715e485e7e5e65fdc652",
-"/": "23920fff0062715e485e7e5e65fdc652",
+"index.html": "cff113d5fd3c5beb0355bfbc8e1f974c",
+"/": "cff113d5fd3c5beb0355bfbc8e1f974c",
 "main.dart.js": "87df578bd05820a88cc58d6861aecda5",
-"manifest.json": "7347de272ba840222bd28ad8c76fc515",
+"manifest.json": "dc30f7ee3a13281d2546b100c6f84be6",
 "version.json": "e0dc595735addb2930238a418fdd016f"
 };
 
