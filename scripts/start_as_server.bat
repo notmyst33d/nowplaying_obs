@@ -1,0 +1,1 @@
+start nowplaying_obs.exe server
