@@ -26,5 +26,5 @@ All you need to do is send POST request to `http://127.0.0.1:50142` with JSON da
 `artist`: Artist name  
 `name`: Song name
 
-## Firefox plugin (currently the only way to use this app)
-https://github.com/notmyst33d/nowplaying_obs_firefox_plugin
+## Browser plugin
+https://github.com/notmyst33d/nowplaying_obs_plugin
