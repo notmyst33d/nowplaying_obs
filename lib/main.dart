@@ -117,7 +117,7 @@ class NowPlayingState extends State<NowPlaying>
       });
       playAnimation();
     });
-    return Response.ok('ACK');
+    return Response.ok('ACK', headers: {'Access-Control-Allow-Origin': '*'});
   }
 
   Widget Popup() {

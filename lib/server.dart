@@ -36,12 +36,6 @@ class NowPlayingServerState extends State<NowPlayingServer> {
 
   var currentSong = 'None';
 
-  @override
-  void dispose() {
-    super.dispose();
-    server.close();
-  }
-
   Future setupServer() async {
     server = await shelf_io.serve(
       logRequests().addHandler(cascade.handler),
@@ -57,7 +51,7 @@ class NowPlayingServerState extends State<NowPlayingServer> {
         currentSong = '${json['artist']} - ${json['name']}';
       });
     });
-    return Response.ok('ACK');
+    return Response.ok('ACK', headers: {'Access-Control-Allow-Origin': '*'});
   }
 
   Response getUpdate(Request request) {
