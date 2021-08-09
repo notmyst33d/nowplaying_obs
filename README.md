@@ -11,9 +11,8 @@ This app is still WIP and has no customization whatsoever, also it cant run in b
 ## Use cases
 ### OBS Browser element (recommended)
 1. Launch start_as_server.bat
-2. Go to https://notmyst33d.github.io/nowplaying_obs
-3. Add Browser element and apply chroma key filter (i recommend you to use Similarity: 325 for best results)
-4. Align the Browser element to the bottom
+2. Add Browser element with https://notmyst33d.github.io/nowplaying_obs link and apply chroma key filter (i recommend you to use Similarity: 325 for best results)
+3. Align the Browser element to the bottom
 
 ### Standalone
 1. Launch nowplaying_obs.exe
