@@ -21,6 +21,15 @@ This app is still WIP and has no customization whatsoever
 
 Note: If you will minimize the window it will stop rendering it, so please keep it in foreground
 
+## Opening settings menu
+If you are using this app standalone then it should be pretty straightforward, hover on top left corner and settings button should appear.
+
+If you are using OBS Browser element you can do this:  
+<img src="https://raw.githubusercontent.com/notmyst33d/nowplaying_obs/assets/obs_settings.gif" width="500">
+
+...or, if you have hard time finding the top left corner, disable chroma key:  
+<img src="https://raw.githubusercontent.com/notmyst33d/nowplaying_obs/assets/obs_no_chroma_key_settings.gif" width="500">
+
 ## How to make your own plugins
 All you need to do is send POST request to `http://127.0.0.1:50142` with JSON data
 
