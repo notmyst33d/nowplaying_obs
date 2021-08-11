@@ -1,7 +1,7 @@
 # Now Playing OBS
 Application for embedding currently playing song in OBS (or any other streaming software that supports window capture and chroma key)
 
-This app is still WIP and has no customization whatsoever
+State: Stable enough, but there could be some bugs.
 
 ## Installing
 1. Download latest Release.7z from Releases section
