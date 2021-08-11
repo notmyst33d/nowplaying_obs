@@ -7,11 +7,11 @@ const RESOURCES = {
 "assets/assets/Inter-Regular.ttf": "515cae74eee4925d56e6ac70c25fc0f6",
 "assets/FontManifest.json": "dd61cbed3570fd7ea7f4fc9f2365ec2b",
 "assets/fonts/MaterialIcons-Regular.otf": "4e6447691c9509f7acdbf8a931a85ca1",
-"assets/NOTICES": "28aed769419ea471d462fb4988bbdb65",
+"assets/NOTICES": "5d82662b0b0677944f67e9d6d8ee4900",
 "favicon.png": "b55ee4a72587c7c2f9db1d657ecbd83c",
-"index.html": "6b895796c47293a5a82a340ee1b26bdc",
-"/": "6b895796c47293a5a82a340ee1b26bdc",
-"main.dart.js": "5458495a1286bbcb8c1ef6753b2c759d",
+"index.html": "382df586d6b039437e72a482083942a3",
+"/": "382df586d6b039437e72a482083942a3",
+"main.dart.js": "17d75a01dc7c6c6b92700b5a9750a2a2",
 "manifest.json": "7347de272ba840222bd28ad8c76fc515",
 "version.json": "1896c17bdc6eb2d2d374f452d58dbe93"
 };
