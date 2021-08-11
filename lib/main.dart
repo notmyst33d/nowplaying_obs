@@ -5,10 +5,15 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:shelf_router/shelf_router.dart' as shelf_router;
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
+import 'settings.dart';
 import 'server.dart';
+import 'slide_popup.dart';
+import 'window_popup.dart';
+import 'extensions.dart';
 
 void main([List<String> args = const []]) {
   if (args.contains('server')) {
@@ -38,6 +43,7 @@ class NowPlaying extends StatefulWidget {
   @override
   NowPlayingState createState() {
     final stateClass = NowPlayingState();
+    stateClass.loadConfig();
     stateClass.setupServer();
     return stateClass;
   }
@@ -50,10 +56,26 @@ class NowPlayingState extends State<NowPlaying>
   late final server;
   var timer;
 
+  late final SharedPreferences storage;
+
+  // Customizable variables
+  Color globalColor = Colors.indigoAccent[100]!;
+  double animationMilliseconds = 1000;
+  double animationHoldMilliseconds = 3000;
+  double widthFactor = 1;
+  double textSize = 14;
+  double popupPadding = 12;
+  String popup = 'SlidePopup';
+  // ----------------------
+
+  double popupWidth = 0;
+  List<bool> styleCardHover = [false, false];
+  bool settingsButtonVisible = false;
+
   String currentSong = 'None';
 
   late final AnimationController controller = AnimationController(
-    duration: Duration(seconds: 1),
+    duration: Duration(milliseconds: animationMilliseconds.toInt()),
     vsync: this,
   );
 
@@ -71,6 +93,18 @@ class NowPlayingState extends State<NowPlaying>
   void dispose() {
     super.dispose();
     controller.dispose();
+    server.close();
+  }
+
+  void loadConfig() async {
+    storage = await SharedPreferences.getInstance();
+    globalColor = HexColor.fromHex(storage.getString('globalColor') ?? '#8c9eff');
+    animationMilliseconds = storage.getDouble('animationMilliseconds') ?? 1000;
+    animationHoldMilliseconds = storage.getDouble('animationHoldMilliseconds') ?? 3000;
+    widthFactor = storage.getDouble('widthFactor') ?? 1;
+    textSize = storage.getDouble('textSize') ?? 14;
+    popupPadding = storage.getDouble('popupPadding') ?? 12;
+    popup = storage.getString('popup') ?? 'SlidePopup';
   }
 
   Future setupServer() async {
@@ -120,29 +154,6 @@ class NowPlayingState extends State<NowPlaying>
     return Response.ok('ACK', headers: {'Access-Control-Allow-Origin': '*'});
   }
 
-  Widget Popup() {
-    return Container(
-      decoration: BoxDecoration(color: Color(0xFF8C9EFF)),
-      child: Padding(
-        padding: EdgeInsets.only(left: 12, right: 12, top: 6, bottom: 6),
-        child: Row(
-          children: [
-            Text(
-              'Now Playing',
-              style: TextStyle(color: Colors.white),
-            ),
-            Spacer(),
-            Icon(Icons.music_note, color: Colors.white),
-            Text(
-              currentSong,
-              style: TextStyle(color: Colors.white),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void playAnimation() {
     if (controller.isCompleted || controller.isAnimating) {
       controller.reset();
@@ -151,21 +162,121 @@ class NowPlayingState extends State<NowPlaying>
     timer?.cancel();
 
     controller.forward().whenComplete(() {
-      timer = Timer(Duration(seconds: 3), () {
+      timer =
+          Timer(Duration(milliseconds: animationHoldMilliseconds.toInt()), () {
         controller.reverse();
       });
     });
   }
 
+  Widget getPopup() {
+    switch (popup) {
+      case 'SlidePopup':
+        return SlidePopup(state: this);
+      case 'WindowPopup':
+        return WindowPopup(state: this);
+      default:
+        return SlidePopup(state: this);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    popupWidth = MediaQuery.of(context).size.width * widthFactor;
+
     return Scaffold(
       body: Column(
         children: [
+          Row(
+            children: [
+              MouseRegion(
+                onHover: (event) {
+                  setState(() {
+                    settingsButtonVisible = true;
+                  });
+                },
+                onExit: (event) {
+                  setState(() {
+                    settingsButtonVisible = false;
+                  });
+                },
+                child: AnimatedOpacity(
+                  opacity: settingsButtonVisible ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 100),
+                  child: IconButton(
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => Settings(
+                          onWidthFactorChanged: (value) {
+                            setState(() {
+                              widthFactor = value;
+                              popupWidth = MediaQuery.of(context).size.width *
+                                  widthFactor;
+                              storage.setDouble('widthFactor', widthFactor);
+                            });
+                          },
+                          onStyleCardHoverChanged: (index, value) {
+                            setState(() {
+                              styleCardHover[index] = value;
+                            });
+                          },
+                          onStyleChanged: (style) {
+                            setState(() {
+                              popup = style;
+                              storage.setString('popup', popup);
+                            });
+                          },
+                          onColorChanged: (newColor) {
+                            setState(() {
+                              globalColor = newColor;
+                              storage.setString('globalColor', globalColor.toHex());
+                            });
+                          },
+                          onTextSizeChanged: (newTextSize) {
+                            setState(() {
+                              textSize = newTextSize;
+                              storage.setDouble('textSize', textSize);
+                            });
+                          },
+                          onPopupPaddingChanged: (newPopupPadding) {
+                            setState(() {
+                              popupPadding = newPopupPadding;
+                              storage.setDouble('popupPadding', popupPadding);
+                            });
+                          },
+                          onAnimationMillisecondsChanged:
+                              (newAnimationMilliseconds) {
+                            setState(() {
+                              animationMilliseconds = newAnimationMilliseconds;
+                              controller.duration = Duration(milliseconds: animationMilliseconds.toInt());
+                              storage.setDouble('animationMilliseconds', animationMilliseconds);
+                            });
+                          },
+                          onAnimationHoldMillisecondsChanged:
+                              (newAnimationHoldMillisecondsChanged) {
+                            setState(() {
+                              animationHoldMilliseconds =
+                                  newAnimationHoldMillisecondsChanged;
+                              storage.setDouble('animationHoldMilliseconds', animationHoldMilliseconds);
+                            });
+                          },
+                          color: globalColor,
+                          state: this,
+                        ),
+                      );
+                    },
+                    icon: Icon(Icons.settings_outlined),
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
           Spacer(),
-          SlideTransition(
-            position: offset,
-            child: Popup(),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: SlideTransition(position: offset, child: getPopup()),
           ),
         ],
       ),
