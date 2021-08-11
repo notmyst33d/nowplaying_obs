@@ -73,6 +73,7 @@ class NowPlayingState extends State<NowPlaying>
   bool settingsButtonVisible = false;
 
   String currentSong = 'None';
+  int eventNumber = 0;
 
   late final AnimationController controller = AnimationController(
     duration: Duration(milliseconds: animationMilliseconds.toInt()),
@@ -98,9 +99,11 @@ class NowPlayingState extends State<NowPlaying>
 
   void loadConfig() async {
     storage = await SharedPreferences.getInstance();
-    globalColor = HexColor.fromHex(storage.getString('globalColor') ?? '#8c9eff');
+    globalColor =
+        HexColor.fromHex(storage.getString('globalColor') ?? '#8c9eff');
     animationMilliseconds = storage.getDouble('animationMilliseconds') ?? 1000;
-    animationHoldMilliseconds = storage.getDouble('animationHoldMilliseconds') ?? 3000;
+    animationHoldMilliseconds =
+        storage.getDouble('animationHoldMilliseconds') ?? 3000;
     widthFactor = storage.getDouble('widthFactor') ?? 1;
     textSize = storage.getDouble('textSize') ?? 14;
     popupPadding = storage.getDouble('popupPadding') ?? 12;
@@ -121,14 +124,21 @@ class NowPlayingState extends State<NowPlaying>
           client
               .get(Uri.parse('http://127.0.0.1:50142/update'))
               .then((response) {
-            if (response.body != currentSong) {
-              setState(() {
-                currentSong = response.body;
-              });
-              playAnimation();
-            }
+            try {
+              final data = jsonDecode(response.body);
+              if (data['currentSong'] != currentSong ||
+                  data['eventNumber'] != eventNumber) {
+                setState(() {
+                  currentSong = data['currentSong'];
+                  eventNumber = data['eventNumber'];
+                });
+                playAnimation();
+              }
 
-            lock = false;
+              lock = false;
+            } catch (e) {
+              lock = false;
+            }
           }).onError((error, stackTrace) {
             lock = false;
           });
@@ -230,7 +240,8 @@ class NowPlayingState extends State<NowPlaying>
                           onColorChanged: (newColor) {
                             setState(() {
                               globalColor = newColor;
-                              storage.setString('globalColor', globalColor.toHex());
+                              storage.setString(
+                                  'globalColor', globalColor.toHex());
                             });
                           },
                           onTextSizeChanged: (newTextSize) {
@@ -249,8 +260,10 @@ class NowPlayingState extends State<NowPlaying>
                               (newAnimationMilliseconds) {
                             setState(() {
                               animationMilliseconds = newAnimationMilliseconds;
-                              controller.duration = Duration(milliseconds: animationMilliseconds.toInt());
-                              storage.setDouble('animationMilliseconds', animationMilliseconds);
+                              controller.duration = Duration(
+                                  milliseconds: animationMilliseconds.toInt());
+                              storage.setDouble('animationMilliseconds',
+                                  animationMilliseconds);
                             });
                           },
                           onAnimationHoldMillisecondsChanged:
@@ -258,7 +271,8 @@ class NowPlayingState extends State<NowPlaying>
                             setState(() {
                               animationHoldMilliseconds =
                                   newAnimationHoldMillisecondsChanged;
-                              storage.setDouble('animationHoldMilliseconds', animationHoldMilliseconds);
+                              storage.setDouble('animationHoldMilliseconds',
+                                  animationHoldMilliseconds);
                             });
                           },
                           color: globalColor,

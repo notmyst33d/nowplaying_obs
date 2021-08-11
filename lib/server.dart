@@ -34,7 +34,8 @@ class NowPlayingServerState extends State<NowPlayingServer> {
   late final cascade = Cascade().add(router);
   late final server;
 
-  var currentSong = 'None';
+  String currentSong = 'None';
+  int eventNumber = 0;
 
   Future setupServer() async {
     server = await shelf_io.serve(
@@ -51,11 +52,12 @@ class NowPlayingServerState extends State<NowPlayingServer> {
         currentSong = '${json['artist']} - ${json['name']}';
       });
     });
+    eventNumber += 1;
     return Response.ok('ACK', headers: {'Access-Control-Allow-Origin': '*'});
   }
 
   Response getUpdate(Request request) {
-    return Response.ok(currentSong, headers: {'Access-Control-Allow-Origin': '*'});
+    return Response.ok(jsonEncode({'currentSong': currentSong, 'eventNumber': eventNumber}), headers: {'Access-Control-Allow-Origin': '*'});
   }
 
   @override
