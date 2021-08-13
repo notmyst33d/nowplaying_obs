@@ -33,6 +33,9 @@ class NowPlayingApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.green,
         primarySwatch: Colors.blue,
         fontFamily: 'Inter',
+        sliderTheme: SliderThemeData(
+          showValueIndicator: ShowValueIndicator.always,
+        ),
       ),
       home: NowPlaying(),
     );
@@ -60,8 +63,8 @@ class NowPlayingState extends State<NowPlaying>
 
   // Customizable variables
   Color globalColor = Colors.indigoAccent[100]!;
-  double animationMilliseconds = 1000;
-  double animationHoldMilliseconds = 3000;
+  double animationSeconds = 1;
+  double animationHoldSeconds = 3;
   double widthFactor = 1;
   double textSize = 14;
   double popupPadding = 12;
@@ -76,7 +79,7 @@ class NowPlayingState extends State<NowPlaying>
   int eventNumber = 0;
 
   late final AnimationController controller = AnimationController(
-    duration: Duration(milliseconds: animationMilliseconds.toInt()),
+    duration: Duration(milliseconds: (animationSeconds * 1000).toInt()),
     vsync: this,
   );
 
@@ -101,9 +104,8 @@ class NowPlayingState extends State<NowPlaying>
     storage = await SharedPreferences.getInstance();
     globalColor =
         HexColor.fromHex(storage.getString('globalColor') ?? '#8c9eff');
-    animationMilliseconds = storage.getDouble('animationMilliseconds') ?? 1000;
-    animationHoldMilliseconds =
-        storage.getDouble('animationHoldMilliseconds') ?? 3000;
+    animationSeconds = storage.getDouble('animationSeconds') ?? 1;
+    animationHoldSeconds = storage.getDouble('animationHoldSeconds') ?? 3;
     widthFactor = storage.getDouble('widthFactor') ?? 1;
     textSize = storage.getDouble('textSize') ?? 14;
     popupPadding = storage.getDouble('popupPadding') ?? 12;
@@ -172,8 +174,8 @@ class NowPlayingState extends State<NowPlaying>
     timer?.cancel();
 
     controller.forward().whenComplete(() {
-      timer =
-          Timer(Duration(milliseconds: animationHoldMilliseconds.toInt()), () {
+      timer = Timer(
+          Duration(milliseconds: (animationHoldSeconds * 1000).toInt()), () {
         controller.reverse();
       });
     });
@@ -256,23 +258,22 @@ class NowPlayingState extends State<NowPlaying>
                               storage.setDouble('popupPadding', popupPadding);
                             });
                           },
-                          onAnimationMillisecondsChanged:
-                              (newAnimationMilliseconds) {
+                          onAnimationSecondsChanged: (newAnimationSeconds) {
                             setState(() {
-                              animationMilliseconds = newAnimationMilliseconds;
+                              animationSeconds = newAnimationSeconds;
                               controller.duration = Duration(
-                                  milliseconds: animationMilliseconds.toInt());
-                              storage.setDouble('animationMilliseconds',
-                                  animationMilliseconds);
+                                  milliseconds:
+                                      (animationSeconds * 1000).toInt());
+                              storage.setDouble(
+                                  'animationSeconds', animationSeconds);
                             });
                           },
-                          onAnimationHoldMillisecondsChanged:
-                              (newAnimationHoldMillisecondsChanged) {
+                          onAnimationHoldSecondsChanged:
+                              (newAnimationHoldSeconds) {
                             setState(() {
-                              animationHoldMilliseconds =
-                                  newAnimationHoldMillisecondsChanged;
-                              storage.setDouble('animationHoldMilliseconds',
-                                  animationHoldMilliseconds);
+                              animationHoldSeconds = newAnimationHoldSeconds;
+                              storage.setDouble(
+                                  'animationHoldSeconds', animationHoldSeconds);
                             });
                           },
                           color: globalColor,

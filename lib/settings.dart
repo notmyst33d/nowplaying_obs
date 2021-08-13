@@ -13,8 +13,8 @@ class Settings extends StatefulWidget {
   final Function(Color) onColorChanged;
   final Function(double) onTextSizeChanged;
   final Function(double) onPopupPaddingChanged;
-  final Function(double) onAnimationMillisecondsChanged;
-  final Function(double) onAnimationHoldMillisecondsChanged;
+  final Function(double) onAnimationSecondsChanged;
+  final Function(double) onAnimationHoldSecondsChanged;
   final Color color;
   final NowPlayingState state;
 
@@ -26,8 +26,8 @@ class Settings extends StatefulWidget {
       required this.onColorChanged,
       required this.onTextSizeChanged,
       required this.onPopupPaddingChanged,
-      required this.onAnimationMillisecondsChanged,
-      required this.onAnimationHoldMillisecondsChanged,
+      required this.onAnimationSecondsChanged,
+      required this.onAnimationHoldSecondsChanged,
       required this.color,
       required this.state})
       : super(key: key);
@@ -247,7 +247,6 @@ class SettingsState extends State<Settings> {
             value: widget.state.widthFactor,
             min: 0.1,
             max: 1.0,
-            divisions: 20,
             label: widget.state.widthFactor.toString(),
             activeColor: widget.state.globalColor,
             onChanged: (value) {
@@ -262,7 +261,6 @@ class SettingsState extends State<Settings> {
             value: widget.state.popupPadding,
             min: 4,
             max: 48,
-            divisions: 20,
             label: widget.state.popupPadding.toInt().toString(),
             activeColor: widget.state.globalColor,
             onChanged: (value) {
@@ -274,31 +272,29 @@ class SettingsState extends State<Settings> {
           ),
           Text('Animation speed in seconds'),
           Slider(
-            value: widget.state.animationMilliseconds.toDouble(),
-            min: 200,
-            max: 3000,
-            divisions: 20,
-            label: (widget.state.animationMilliseconds / 1000).toString(),
+            value: widget.state.animationSeconds,
+            min: 0.2,
+            max: 10,
+            label: widget.state.animationSeconds.toString(),
             activeColor: widget.state.globalColor,
             onChanged: (value) {
               setState(() {
-                widget.onAnimationMillisecondsChanged(
-                    double.parse(value.toInt().toString()));
+                widget.onAnimationSecondsChanged(
+                    double.parse(value.toStringAsFixed(1)));
               });
             },
           ),
           Text('Animation hold speed in seconds'),
           Slider(
-            value: widget.state.animationHoldMilliseconds.toDouble(),
-            min: 200,
-            max: 10000,
-            divisions: 20,
-            label: (widget.state.animationHoldMilliseconds / 1000).toString(),
+            value: widget.state.animationHoldSeconds,
+            min: 0.2,
+            max: 10,
+            label: widget.state.animationHoldSeconds.toString(),
             activeColor: widget.state.globalColor,
             onChanged: (value) {
               setState(() {
-                widget.onAnimationHoldMillisecondsChanged(
-                    double.parse(value.toInt().toString()));
+                widget.onAnimationHoldSecondsChanged(
+                    double.parse(value.toStringAsFixed(1)));
               });
             },
           ),
@@ -308,7 +304,6 @@ class SettingsState extends State<Settings> {
             value: widget.state.textSize,
             min: 14,
             max: 56,
-            divisions: 20,
             label: widget.state.textSize.toInt().toString(),
             activeColor: widget.state.globalColor,
             onChanged: (value) {
