@@ -33,9 +33,6 @@ class NowPlayingApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.green,
         primarySwatch: Colors.blue,
         fontFamily: 'Inter',
-        sliderTheme: SliderThemeData(
-          showValueIndicator: ShowValueIndicator.always,
-        ),
       ),
       home: NowPlaying(),
     );
@@ -62,13 +59,14 @@ class NowPlayingState extends State<NowPlaying>
   late final SharedPreferences storage;
 
   // Customizable variables
-  Color globalColor = Colors.indigoAccent[100]!;
+  Color globalColor = HexColor.fromHex('#3f7ccc');
   double animationSeconds = 1;
   double animationHoldSeconds = 3;
   double widthFactor = 1;
   double textSize = 14;
   double popupPadding = 12;
   String popup = 'SlidePopup';
+  bool darkMode = false;
   // ----------------------
 
   double popupWidth = 0;
@@ -110,6 +108,7 @@ class NowPlayingState extends State<NowPlaying>
     textSize = storage.getDouble('textSize') ?? 14;
     popupPadding = storage.getDouble('popupPadding') ?? 12;
     popup = storage.getString('popup') ?? 'SlidePopup';
+    darkMode = storage.getBool('darkMode') ?? false;
   }
 
   Future setupServer() async {
@@ -214,7 +213,7 @@ class NowPlayingState extends State<NowPlaying>
                 },
                 child: AnimatedOpacity(
                   opacity: settingsButtonVisible ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 100),
+                  duration: Duration(milliseconds: 100),
                   child: IconButton(
                     onPressed: () {
                       showDialog(
@@ -225,7 +224,6 @@ class NowPlayingState extends State<NowPlaying>
                               widthFactor = value;
                               popupWidth = MediaQuery.of(context).size.width *
                                   widthFactor;
-                              storage.setDouble('widthFactor', widthFactor);
                             });
                           },
                           onStyleCardHoverChanged: (index, value) {
@@ -236,26 +234,21 @@ class NowPlayingState extends State<NowPlaying>
                           onStyleChanged: (style) {
                             setState(() {
                               popup = style;
-                              storage.setString('popup', popup);
                             });
                           },
                           onColorChanged: (newColor) {
                             setState(() {
                               globalColor = newColor;
-                              storage.setString(
-                                  'globalColor', globalColor.toHex());
                             });
                           },
                           onTextSizeChanged: (newTextSize) {
                             setState(() {
                               textSize = newTextSize;
-                              storage.setDouble('textSize', textSize);
                             });
                           },
                           onPopupPaddingChanged: (newPopupPadding) {
                             setState(() {
                               popupPadding = newPopupPadding;
-                              storage.setDouble('popupPadding', popupPadding);
                             });
                           },
                           onAnimationSecondsChanged: (newAnimationSeconds) {
@@ -264,22 +257,32 @@ class NowPlayingState extends State<NowPlaying>
                               controller.duration = Duration(
                                   milliseconds:
                                       (animationSeconds * 1000).toInt());
-                              storage.setDouble(
-                                  'animationSeconds', animationSeconds);
                             });
                           },
                           onAnimationHoldSecondsChanged:
                               (newAnimationHoldSeconds) {
                             setState(() {
                               animationHoldSeconds = newAnimationHoldSeconds;
-                              storage.setDouble(
-                                  'animationHoldSeconds', animationHoldSeconds);
                             });
                           },
-                          color: globalColor,
+                          onDarkModeChanged: (newDarkMode) {
+                            setState(() {
+                              darkMode = newDarkMode;
+                            });
+                          },
                           state: this,
                         ),
-                      );
+                      ).then((exit) {
+                        storage.setDouble('widthFactor', widthFactor);
+                        storage.setString('popup', popup);
+                        storage.setString('globalColor', globalColor.toHex());
+                        storage.setDouble('textSize', textSize);
+                        storage.setDouble('popupPadding', popupPadding);
+                        storage.setDouble('animationSeconds', animationSeconds);
+                        storage.setDouble(
+                            'animationHoldSeconds', animationHoldSeconds);
+                        storage.setBool('darkMode', darkMode);
+                      });
                     },
                     icon: Icon(Icons.settings_outlined),
                     color: Colors.white,

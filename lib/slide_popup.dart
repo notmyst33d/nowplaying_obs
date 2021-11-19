@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'main.dart';
+import 'color_utils.dart';
 
 class SlidePopup extends StatefulWidget {
   final NowPlayingState state;
@@ -18,16 +19,15 @@ class SlidePopupState extends State<SlidePopup> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.state.popupWidth,
-      decoration: BoxDecoration(color: widget.state.globalColor),
+      decoration: BoxDecoration(
+        color: widget.state.darkMode
+            ? getDarkColor(widget.state.globalColor)
+            : getLightColor(widget.state.globalColor),
+      ),
       child: Padding(
         padding: EdgeInsets.all(widget.state.popupPadding),
         child: Row(
           children: [
-            Icon(
-              Icons.music_note,
-              color: Colors.white,
-              size: widget.state.textSize + 10,
-            ),
             Expanded(
               child: Text(
                 widget.state.currentSong,
@@ -35,16 +35,23 @@ class SlidePopupState extends State<SlidePopup> {
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: widget.state.globalColor,
                   fontSize: widget.state.textSize,
                 ),
               ),
             ),
+            Icon(
+              Icons.music_note,
+              color: widget.state.globalColor,
+              size: widget.state.textSize + 8,
+            ),
+            Padding(padding: EdgeInsets.only(left: 4)),
             Text(
               'Now Playing',
               style: TextStyle(
-                color: Colors.white,
-                fontSize: widget.state.textSize,
+                color: widget.state.globalColor,
+                fontSize: widget.state.textSize + 4,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],

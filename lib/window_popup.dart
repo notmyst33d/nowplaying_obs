@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'main.dart';
+import 'color_utils.dart';
 
 class WindowPopup extends StatefulWidget {
   final NowPlayingState state;
@@ -21,7 +22,7 @@ class WindowPopupState extends State<WindowPopup> {
       child: Container(
         width: widget.state.popupWidth,
         decoration: BoxDecoration(
-          color: widget.state.globalColor,
+          color: widget.state.darkMode ? getDarkColor(widget.state.globalColor) : getLightColor(widget.state.globalColor),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Padding(
@@ -29,38 +30,48 @@ class WindowPopupState extends State<WindowPopup> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Now Playing',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: widget.state.textSize,
-                ),
-                overflow: TextOverflow.fade,
-                softWrap: false,
-                maxLines: 1,
-              ),
-              Padding(padding: EdgeInsets.all(8)),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
                     Icons.music_note,
-                    color: Colors.white,
-                    size: widget.state.textSize + 10,
+                    color: widget.state.globalColor,
+                    size: widget.state.textSize + 8,
                   ),
-                  Expanded(
-                    child: Text(
-                      widget.state.currentSong,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: widget.state.textSize,
-                      ),
-                      overflow: TextOverflow.fade,
-                      maxLines: 4,
+                  Padding(padding: EdgeInsets.only(left: 4)),
+                  Text(
+                    'Now Playing',
+                    style: TextStyle(
+                      color: widget.state.globalColor,
+                      fontSize: widget.state.textSize + 4,
+                      fontWeight: FontWeight.bold,
                     ),
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                    maxLines: 1,
                   ),
                 ],
-              )
+              ),
+              Padding(padding: EdgeInsets.only(top: 8)),
+              Padding(
+                padding: EdgeInsets.only(left: 4),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        widget.state.currentSong,
+                        style: TextStyle(
+                          color: widget.state.globalColor,
+                          fontSize: widget.state.textSize,
+                        ),
+                        overflow: TextOverflow.fade,
+                        maxLines: 4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
