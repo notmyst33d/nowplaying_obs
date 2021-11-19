@@ -101,7 +101,7 @@ class NowPlayingState extends State<NowPlaying>
   void loadConfig() async {
     storage = await SharedPreferences.getInstance();
     globalColor =
-        HexColor.fromHex(storage.getString('globalColor') ?? '#8c9eff');
+        HexColor.fromHex(storage.getString('globalColor') ?? '#3f7ccc');
     animationSeconds = storage.getDouble('animationSeconds') ?? 1;
     animationHoldSeconds = storage.getDouble('animationHoldSeconds') ?? 3;
     widthFactor = storage.getDouble('widthFactor') ?? 1;
