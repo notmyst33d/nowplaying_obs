@@ -64558,7 +64558,7 @@ case 2:p=b
 A.cK(q.x,"storage")
 q.x=p
 p=A.cj(J.an(A.a(p,"storage").a,"globalColor"))
-q.y=A.ag8(p==null?"#8c9eff":p)
+q.y=A.ag8(p==null?"#3f7ccc":p)
 p=A.AJ(J.an(A.a(q.x,"storage").a,"animationSeconds"))
 q.z=p==null?1:p
 p=A.AJ(J.an(A.a(q.x,"storage").a,"animationHoldSeconds"))
